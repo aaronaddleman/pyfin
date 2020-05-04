@@ -11,8 +11,13 @@ class Stock():
         self.symbol = symbol
         self.startdate = startDate
         self.enddate = endDate
-        self.stock_data = []
 
     def getData(self):
         df = pdr.get_data_yahoo(self.symbol, self.startdate, self.enddate)
         self.stock_data = df
+
+    def addMovingAverage(self, moving_average_days):
+        smaString="Sma_"+str(moving_average_days)
+        df = self.stock_data
+        self.stock_data[smaString]=df.iloc[:,4].rolling(window=moving_average_days).mean()
+
