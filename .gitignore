@@ -1,0 +1,5 @@
+.env
+.ipynb_checkpoints
+.pytest_cache
+pyfin/__pycache__/
+tests/__pycache__/
