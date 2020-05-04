@@ -16,8 +16,9 @@ class Stock():
         df = pdr.get_data_yahoo(self.symbol, self.startdate, self.enddate)
         self.stock_data = df
 
-    def addMovingAverage(self, moving_average_days):
+    def addMovingAverage(self, moving_average_days=10, remove_nil=False):
         smaString="Sma_"+str(moving_average_days)
         df = self.stock_data
         self.stock_data[smaString]=df.iloc[:,4].rolling(window=moving_average_days).mean()
-
+        if remove_nil :
+            self.stock_data = self.stock_data.iloc[moving_average_days:]
