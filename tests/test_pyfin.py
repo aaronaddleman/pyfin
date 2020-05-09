@@ -16,10 +16,12 @@ def test_stock(apple_stock):
 
 def test_stock_getdata(apple_stock):
     assert len(apple_stock.stock_data) == 21
-    assert isinstance(apple_stock.stock_data, )
+    assert isinstance(apple_stock.stock_data, pd.DataFrame)
 
-# def test_moving_average(apple_stock):
-#     df = apple_stock.stock_data
-#     moving_average_column = df.filter(regex='ma')
-#     expected_list = ['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
-#     assert len(expected_list) == len(df.columns)
+def test_moving_average(apple_stock):
+    stock_data = apple_stock.stock_data
+    apple_stock.addMovingAverage(10, remove_nil=True)
+    moving_average_column = stock_data.filter(regex='ma')
+    expected_list = ['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Sma_10']
+    assert len(expected_list) == len(stock_data.columns)
+    assert 'Sma_10' in stock_data.columns
