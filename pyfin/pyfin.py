@@ -12,6 +12,7 @@ class Stock():
         self.startdate = startDate
         self.enddate = endDate
         self.exp_moving_averages = [3,5,8,10,12,15,30,35,40,45,50,60]
+        self.strategies = []
 
     def getData(self):
         '''Fetch the stock data for the date range provided'''
@@ -30,3 +31,80 @@ class Stock():
         for moving_average in self.exp_moving_averages:
             mean_value = self.stock_data.loc[:,'Adj Close'].ewm(span=moving_average, adjust=False).mean()
             self.stock_data["Ema_"+str(moving_average)] = round(mean_value, 2)
+
+class Strategy():
+    def __init__(self, stock_list):
+        self.stock_list = stock_list
+        self.validate_stocks()
+
+    def validate_stocks(self):
+        for stock in self.stock_list:
+            try:
+                # find remainder of dividing by 2
+                # and compare if the remainder is 0
+                len(stock.exp_moving_averages) % 2 == 0
+            except:
+                print("current exp moving avg: ")
+                print(stock.exp_moving_averages)
+                raise Exception('exp_moving_averages should be divisible by 2')
+
+    def red_white_blue(self):
+        for stock in self.stock_list:
+            # build vars for socks
+            # filter columns based on name starting with Ema_
+            exp_mov_avg = [col for col in stock.stock_data if col.startswith('Ema_')]
+            exp_mov_avg_half_int = len(exp_mov_avg) / 2
+            exp_mov_avg_half_cnt = 1
+            exp_mov_avg_min = []
+            exp_mov_avg_max = []
+
+            # build min and max moving averages
+            for exp in exp_mov_avg:
+                if exp_mov_avg_half_cnt <= exp_mov_avg_half_int:
+                    # if the half count is less than or equal
+                    # to length of exp_mov_avg, it is a min value
+                    exp_mov_avg_min.append(exp)
+                    exp_mov_avg_half_cnt += 1
+                else:
+                    exp_mov_avg_max.append(exp)
+
+            df = stock.stock_data
+            df["Exp_Min"] = stock.stock_data[exp_mov_avg_min].min(axis=1)
+            df["Exp_Max"] = stock.stock_data[exp_mov_avg_max].max(axis=1)
+
+            pos = 0
+            num = 0
+            percentchange = []
+
+            # if exp_min is greater than exp_max, buy
+            # if not, then sell
+            for i in df.index:
+                cmin = df['Exp_Min'][i]
+                cmax = df['Exp_Max'][i]
+                close = df['Adj Close'][i]
+
+                if (cmin > cmax):
+                    if (pos == 0):
+                        bp = close
+                        pos = 1
+                        print("buying now at " + str(bp))
+
+                elif (cmin < cmax):
+                    if (pos == 1):
+                        pos = 0
+                        sp = close
+                        print("selling now at " + str(sp))
+                        pc = (sp/bp-1)*100
+                        percentchange.append(pc)
+
+                if (num == df["Adj Close"].count()-1 and pos == 1):
+                    pos = 0
+                    sp = close
+                    print("selling now at " + str(sp))
+                    pc = (sp/bp-1)*100
+                    percentchange.append(pc)
+
+                num+=1
+
+
+            print(percentchange)
