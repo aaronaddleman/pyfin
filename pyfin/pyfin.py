@@ -28,6 +28,5 @@ class Stock():
 
     def addExpMovingAverage(self):
         for moving_average in self.exp_moving_averages:
-            mean_value = self.stock_data['Adj Close'].ewm(span=moving_average,adjust=False).mean()
-            mean_df = pd.DataFrame()
-            self.stock_data.loc[self.stock_data['Adj Close'], "ExpMovAvg_"+str(moving_average)] = round(mean_value)
+            mean_value = self.stock_data.loc[:,'Adj Close'].ewm(span=moving_average, adjust=False).mean()
+            self.stock_data["Ema_"+str(moving_average)] = round(mean_value, 2)
