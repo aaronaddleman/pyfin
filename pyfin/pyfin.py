@@ -44,8 +44,9 @@ class Stock():
             self.stock_data["Ema_"+str(moving_average)] = round(mean_value, 2)
 
 class Strategy():
-    def __init__(self, name=None):
+    def __init__(self, name=None, stock_obj=None):
         self.name = name
+        self.stock_obj = stock_obj
         self.dataframe = None
         self.percentchange = None
         self.start_date = None
@@ -80,30 +81,30 @@ class Strategy():
 
     def build_report(self):
         gains=0
-        ng=0
+        net_gains=0
         losses=0
-        nl=0
-        totalR=1
+        net_losses=0
+        total_returns=1
 
         for i in self.percentchange:
             if(i>0):
                 gains+=1
-                ng+=1
+                net_gains+=1
             else:
                 losses+=i
-                nl+=1
-            totalR=totalR*((i/100)+1)
-        totalR=round((totalR-1)*100,2)
+                net_losses+=1
+            total_returns=total_returns*((i/100)+1)
+        total_returns=round((total_returns-1)*100,2)
 
-        if (ng>0):
-            avgGain=gains/ng
+        if (net_gains>0):
+            avgGain=gains/net_gains
             maxR=str(max(self.percentchange))
         else:
             avgGain=0
             maxR="undefined"
 
-        if (nl>0):
-            avgLoss=losses/nl
+        if (net_losses>0):
+            avgLoss=losses/net_losses
             maxL=str(min(self.percentchange))
             ratio=str(-avgGain/avgLoss)
         else:
@@ -111,21 +112,21 @@ class Strategy():
             maxL="undefined"
             ratio="inf"
 
-        if(ng>0 or nl>0):
-            battingAvg=ng/(ng+nl)
+        if(net_gains>0 or net_losses>0):
+            battingAvg=net_gains/(net_gains+net_losses)
         else:
             battingAvg=0
 
         print()
         print(f"Results starting at {self.dataframe.index[0]}")
-        print(f"EMAs used: (need to make strategies a superset of stock)")
+        print(f"EMAs used: {str(self.stock_obj.exp_moving_averages)}")
         print(f"Batting Avg: {str(battingAvg)}")
         print(f"Gain/loss ratio: {ratio}")
         print(f"Average gain: {str(avgGain)}")
         print(f"Average loss: {str(avgLoss)}")
         print(f"Max return: {maxR}")
         print(f"Max loss: {maxL}")
-        print(f"Total return over {str(ng+nl)} trades: {str(totalR)}%")
+        print(f"Total return over {str(net_gains+net_losses)} trades: {str(total_returns)}%")
 
     def red_white_blue(self, dataframe=None):
         # build vars for socks

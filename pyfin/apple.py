@@ -13,7 +13,7 @@ apple.getData()
 #apple.addMovingAverage(moving_average_days=10, remove_nil=True)
 #apple.addMovingAverage(moving_average_days=5, remove_nil=True)
 apple.addExpMovingAverage()
-apple_strategy_rwb = Strategy(name='rwb')
+apple_strategy_rwb = Strategy(name='rwb', stock_obj=apple)
 apple_strategy_rwb.red_white_blue(dataframe=apple.stock_data)
 apple.strategies.update({'rwb' : apple_strategy_rwb})
 
