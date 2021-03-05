@@ -7,13 +7,19 @@ from pandas_datareader import data as pdr
 yf.pdr_override()
 
 class Stock():
-    def __init__(self, symbol, startDate, endDate):
+    def __init__(self, 
+                 symbol=None, 
+                 startDate=None, 
+                 endDate=None, 
+                 exp_moving_averages=[3,5,8,10,12,15,30,35,40,45,50,60]
+                ):
         self.symbol = symbol
         self.startdate = startDate
         self.enddate = endDate
-        self.exp_moving_averages = [3,5,8,10,12,15,30,35,40,45,50,60]
+        self.exp_moving_averages = exp_moving_averages
         self.validate_stocks()
         self.strategies = {}
+        self.stock_data = False
 
     def getData(self):
         '''Fetch the stock data for the date range provided'''
@@ -34,9 +40,7 @@ class Stock():
             # and compare if the remainder is 0
             len(self.exp_moving_averages) % 2 == 0
         except:
-            print("current exp moving avg: ")
-            print(self.exp_moving_averages)
-            raise Exception('exp_moving_averages should be divisible by 2')
+            raise Exception("bad moving average")
 
     def addExpMovingAverage(self):
         for moving_average in self.exp_moving_averages:

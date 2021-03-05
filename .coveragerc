@@ -1,0 +1,7 @@
+[run]
+source=
+  pyfin
+omit= 
+  .env/*
+  .local/*
+  venv/*
