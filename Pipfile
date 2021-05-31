@@ -10,6 +10,7 @@ pytest-cov = "*"
 numpy = "*"
 yfinance = "*"
 pandas-datareader = "*"
+alpaca-trade-api = "*"
 
 [dev-packages]
 

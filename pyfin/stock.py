@@ -181,6 +181,6 @@ class Strategy():
                 sp = close
                 pc = (sp/bp-1)*100
                 percentchange.append(pc)
-            num+=1
+            num += 1
         self.dataframe = df
         self.percentchange = percentchange
