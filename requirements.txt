@@ -18,7 +18,7 @@ python-dateutil==2.8.1
 pytz==2020.1
 requests==2.23.0
 six==1.14.0
-urllib3==1.25.9
+urllib3==1.26.5
 wcwidth==0.1.9
 yfinance==0.1.54
 zipp==3.1.0
