@@ -5,6 +5,8 @@ python finance
 ## Running tests
 
 ```
+poetry install
+poetry shell
 python -m pytest -v
 ```
 
